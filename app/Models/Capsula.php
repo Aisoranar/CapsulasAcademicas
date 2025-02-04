@@ -15,6 +15,7 @@ class Capsula extends Model
         'video_url',
         'docente_id',
         'categoria',
+        'duracion', // Agregado el campo duracion
     ];
 
     public function docente()

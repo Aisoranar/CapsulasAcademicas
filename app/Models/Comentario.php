@@ -10,19 +10,18 @@ class Comentario extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
         'capsula_id',
+        'user_id',
         'contenido',
-        'calificacion',
     ];
-
-    public function usuario()
-    {
-        return $this->belongsTo(User::class);
-    }
 
     public function capsula()
     {
         return $this->belongsTo(Capsula::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

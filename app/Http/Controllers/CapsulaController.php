@@ -40,6 +40,9 @@ class CapsulaController extends Controller
         // Se asigna el docente autenticado
         $validated['docente_id'] = Auth::id();
 
+        // Asignar un valor por defecto a 'duracion'
+        $validated['duracion'] = 0;
+
         Capsula::create($validated);
 
         return redirect()->route('capsulas.index')->with('success', 'Cápsula creada exitosamente.');
@@ -74,7 +77,13 @@ class CapsulaController extends Controller
             'descripcion' => 'required|string',
             'video_url'   => 'required|url',
             'categoria'   => 'nullable|string|max:255',
+            // Aquí podrías también actualizar 'duracion' si lo deseas
         ]);
+
+        // Si no se recibe la duración en el request, puedes asignar un valor por defecto
+        if (!isset($validated['duracion'])) {
+            $validated['duracion'] = $capsula->duracion ?? 0;
+        }
 
         $capsula->update($validated);
 

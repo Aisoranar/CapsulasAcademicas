@@ -41,6 +41,8 @@ class DocumentoController extends Controller
         // Se sube el archivo al disco "public" en la carpeta "documentos"
         $path = $request->file('archivo')->store('documentos', 'public');
         $validated['archivo_path'] = $path;
+        // Se guarda el nombre original del archivo para usarlo en la descarga
+        $validated['nombre_original'] = $request->file('archivo')->getClientOriginalName();
         // Se asigna el docente autenticado
         $validated['docente_id'] = Auth::id();
 
@@ -87,6 +89,8 @@ class DocumentoController extends Controller
             }
             $path = $request->file('archivo')->store('documentos', 'public');
             $validated['archivo_path'] = $path;
+            // Actualizamos el nombre original del archivo
+            $validated['nombre_original'] = $request->file('archivo')->getClientOriginalName();
         }
 
         $documento->update($validated);
@@ -106,5 +110,21 @@ class DocumentoController extends Controller
         $documento->delete();
 
         return redirect()->route('documentos.index')->with('success', 'Documento eliminado exitosamente.');
+    }
+
+    /**
+     * Descarga el documento con el nombre y formato original.
+     */
+    public function download($id)
+    {
+        $documento = Documento::findOrFail($id);
+        // Se obtiene la ruta del archivo almacenado
+        $path = $documento->archivo_path;
+        // Se obtiene el nombre original almacenado; si no existe, se usa el nombre del archivo almacenado
+        $filename = $documento->nombre_original ?? basename($path);
+        // Se obtiene la ruta completa del archivo en el disco "public"
+        $fullPath = Storage::disk('public')->path($path);
+
+        return response()->download($fullPath, $filename);
     }
 }

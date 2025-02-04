@@ -14,13 +14,14 @@ return new class extends Migration
         Schema::create('asesorias', function (Blueprint $table) {
             $table->id();
             $table->foreignId('docente_id')->constrained('users');
-            $table->foreignId('estudiante_id')->constrained('users');
-            $table->string('tema');
-            $table->datetime('fecha_hora');
-            $table->text('link_sala_virtual');
+            $table->string('materia');       // Campo requerido: materia
+            $table->string('tema');          // Campo para el tema de la asesoría
+            $table->date('fecha');           // Fecha de la asesoría
+            $table->string('hora_inicio');   // Hora de inicio (puedes cambiar a time() si lo prefieres)
+            $table->string('hora_fin');      // Hora de fin
+            $table->string('enlace_sala');   // Enlace a la sala (ej. Google Meet)
             $table->timestamps();
         });
-        
     }
 
     /**

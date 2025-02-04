@@ -12,9 +12,9 @@ class Documento extends Model
     protected $fillable = [
         'titulo',
         'descripcion',
+        'categoria',
         'archivo_path',
         'docente_id',
-        'categoria',
     ];
 
     public function docente()

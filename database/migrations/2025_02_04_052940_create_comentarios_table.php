@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('capsulas', function (Blueprint $table) {
+        Schema::create('comentarios', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('docente_id')->constrained('users');
-            $table->string('titulo');
-            $table->text('descripcion');
-            $table->string('video_url');
-            $table->string('categoria')->nullable();
-            $table->integer('duracion');
+            $table->foreignId('capsula_id')->constrained('capsulas')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->text('contenido');
             $table->timestamps();
         });
     }
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('capsulas');
+        Schema::dropIfExists('comentarios');
     }
 };

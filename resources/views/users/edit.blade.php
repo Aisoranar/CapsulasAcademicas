@@ -26,12 +26,12 @@
         </select>
     </div>
     <div class="mb-3">
-        <label for="programa_academico" class="form-label">Programa Académico</label>
-        <input type="text" name="programa_academico" id="programa_academico" class="form-control" value="{{ $user->programa_academico }}">
+        <label for="carrera" class="form-label">Carrera</label>
+        <input type="text" name="carrera" id="carrera" class="form-control" value="{{ $user->carrera }}">
     </div>
     <div class="mb-3">
-        <label for="departamento_academico" class="form-label">Departamento Académico</label>
-        <input type="text" name="departamento_academico" id="departamento_academico" class="form-control" value="{{ $user->departamento_academico }}">
+        <label for="departamento" class="form-label">Departamento</label>
+        <input type="text" name="departamento" id="departamento" class="form-control" value="{{ $user->departamento }}">
     </div>
     <button type="submit" class="btn btn-primary">Actualizar Usuario</button>
 </form>

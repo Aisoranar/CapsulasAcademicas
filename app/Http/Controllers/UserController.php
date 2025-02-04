@@ -4,16 +4,48 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash; // Para encriptar la contraseña
 
 class UserController extends Controller
 {
     /**
-     * Muestra la lista de usuarios.
+     * Muestra el listado de usuarios.
      */
     public function index()
     {
         $users = User::all();
         return view('users.index', compact('users'));
+    }
+
+    /**
+     * Muestra el formulario para crear un nuevo usuario.
+     */
+    public function create()
+    {
+        return view('users.create');
+    }
+
+    /**
+     * Almacena un nuevo usuario en la base de datos.
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'nombre_completo' => 'required|string|max:255',
+            'identificacion'  => 'required|string|max:255|unique:users,identificacion',
+            'email'           => 'required|email|max:255|unique:users,email',
+            'password'        => 'required|string|min:6|confirmed',
+            'rol'             => 'required|in:admin,docente,estudiante',
+            'carrera'         => 'nullable|string|max:255',
+            'departamento'    => 'nullable|string|max:255',
+        ]);
+
+        // Encriptar la contraseña antes de guardar
+        $validated['password'] = Hash::make($validated['password']);
+
+        User::create($validated);
+
+        return redirect()->route('users.index')->with('success', 'Usuario creado exitosamente.');
     }
 
     /**
@@ -41,12 +73,12 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         $validated = $request->validate([
-            'nombre_completo'         => 'required|string|max:255',
-            'email'                   => 'required|email|max:255',
-            'identificacion'          => 'required|string|max:255',
-            'rol'                     => 'required|in:admin,docente,estudiante',
-            'programa_academico'      => 'nullable|string|max:255',
-            'departamento_academico'  => 'nullable|string|max:255',
+            'nombre_completo' => 'required|string|max:255',
+            'email'           => 'required|email|max:255|unique:users,email,'.$user->id,
+            'identificacion'  => 'required|string|max:255|unique:users,identificacion,'.$user->id,
+            'rol'             => 'required|in:admin,docente,estudiante',
+            'carrera'         => 'nullable|string|max:255',
+            'departamento'    => 'nullable|string|max:255',
         ]);
 
         $user->update($validated);

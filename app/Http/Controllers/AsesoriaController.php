@@ -34,13 +34,13 @@ class AsesoriaController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'docente_id'   => 'required|exists:users,id',
-            'materia'      => 'required|string|max:255',
-            'tema'         => 'required|string|max:255',
-            'fecha'        => 'required|date',
-            'hora_inicio'  => 'required',
-            'hora_fin'     => 'required',
-            'enlace_sala'  => 'required|url',
+            'docente_id'  => 'required|exists:users,id',
+            'materia'     => 'required|string|max:255',
+            'tema'        => 'required|string|max:255',
+            'fecha'       => 'required|date',
+            'hora_inicio' => 'required',
+            'hora_fin'    => 'required',
+            'enlace_sala' => 'required|url',
         ]);
 
         Asesoria::create($validated);
@@ -74,13 +74,13 @@ class AsesoriaController extends Controller
     {
         $asesoria = Asesoria::findOrFail($id);
         $validated = $request->validate([
-            'docente_id'   => 'required|exists:users,id',
-            'materia'      => 'required|string|max:255',
-            'tema'         => 'required|string|max:255',
-            'fecha'        => 'required|date',
-            'hora_inicio'  => 'required',
-            'hora_fin'     => 'required',
-            'enlace_sala'  => 'required|url',
+            'docente_id'  => 'required|exists:users,id',
+            'materia'     => 'required|string|max:255',
+            'tema'        => 'required|string|max:255',
+            'fecha'       => 'required|date',
+            'hora_inicio' => 'required',
+            'hora_fin'    => 'required',
+            'enlace_sala' => 'required|url',
         ]);
 
         $asesoria->update($validated);

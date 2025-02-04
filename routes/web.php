@@ -23,6 +23,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('asesorias', AsesoriaController::class);
     Route::resource('capsulas', CapsulaController::class);
     Route::resource('documentos', DocumentoController::class);
+    
+    // Ruta para descargar el documento con su nombre y formato original
+    Route::get('/documentos/{id}/download', [DocumentoController::class, 'download'])->name('documentos.download');
+    
     // Rutas de administración de usuarios (solo para administradores, se puede proteger con middleware adicional)
     Route::resource('users', UserController::class);
 });

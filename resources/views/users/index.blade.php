@@ -2,6 +2,7 @@
 
 @section('content')
 <h2>Listado de Usuarios</h2>
+<a href="{{ route('users.create') }}" class="btn btn-success mb-3">Crear Nuevo Usuario</a>
 <table class="table table-striped">
     <thead>
         <tr>

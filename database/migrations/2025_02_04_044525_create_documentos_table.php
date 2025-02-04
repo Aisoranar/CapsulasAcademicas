@@ -16,7 +16,9 @@ return new class extends Migration
             $table->foreignId('docente_id')->constrained('users');
             $table->string('titulo');
             $table->text('descripcion')->nullable();
-            $table->string('archivo_url');
+            $table->string('categoria')->nullable();
+            $table->string('archivo_path');
+            $table->string('nombre_original')->nullable();
             $table->timestamps();
         });
     }

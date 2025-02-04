@@ -26,6 +26,7 @@ class Asesoria extends Model
 
     public function estudiantes()
     {
+        // Se usa la tabla pivote "asesoria_estudiante"
         return $this->belongsToMany(User::class, 'asesoria_estudiante', 'asesoria_id', 'estudiante_id');
     }
 }
