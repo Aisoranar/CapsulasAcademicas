@@ -20,9 +20,7 @@
                     <a href="{{ route('login') }}" class="btn btn-login px-4 py-2">
                         <i class="fas fa-sign-in-alt me-2"></i> Ingreso Institucional
                     </a>
-                    <a href="{{ route('register') }}" class="btn btn-register px-4 py-2">
-                        <i class="fas fa-user-plus me-2"></i> Registro Estudiantil
-                    </a>
+
                 </div>
                 @endguest
             </div>

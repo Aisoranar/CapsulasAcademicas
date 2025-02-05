@@ -16,7 +16,6 @@
             </div>
             <button type="submit" class="btn btn-primary">Ingresar</button>
         </form>
-        <p class="mt-3">¿No tienes cuenta? <a href="{{ route('register') }}">Regístrate aquí</a></p>
     </div>
 </div>
 @endsection
