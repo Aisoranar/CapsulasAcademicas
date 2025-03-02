@@ -6,6 +6,8 @@ use App\Http\Controllers\CapsulaController;
 use App\Http\Controllers\DocumentoController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ComentarioController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -29,4 +31,8 @@ Route::middleware('auth')->group(function () {
     
     // Rutas de administración de usuarios (solo para administradores, se puede proteger con middleware adicional)
     Route::resource('users', UserController::class);
+    
+   // Rutas para comentarios
+   Route::post('comentarios', [ComentarioController::class, 'store'])->name('comentarios.store');
+   Route::post('comentarios/{comentario}/reaccion', [ComentarioController::class, 'reaccion'])->name('comentarios.reaccion');
 });

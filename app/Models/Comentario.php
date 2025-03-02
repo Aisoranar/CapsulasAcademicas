@@ -13,6 +13,7 @@ class Comentario extends Model
         'capsula_id',
         'user_id',
         'contenido',
+        'parent_id',
     ];
 
     public function capsula()
@@ -23,5 +24,23 @@ class Comentario extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    // Comentario padre (si es respuesta a otro comentario)
+    public function parent()
+    {
+        return $this->belongsTo(Comentario::class, 'parent_id');
+    }
+
+    // Respuestas al comentario (comentarios hijos)
+    public function replies()
+    {
+        return $this->hasMany(Comentario::class, 'parent_id');
+    }
+
+    // Reacciones (like/dislike)
+    public function reacciones()
+    {
+        return $this->hasMany(ComentarioReaccion::class);
     }
 }
