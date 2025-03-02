@@ -23,11 +23,21 @@ class UserSeeder extends Seeder
             'programa_academico'      => null,
             'departamento_academico'  => null,
         ]);
+        // Usuario administrador
+        User::create([
+            'nombre_completo'         => 'Camilo',
+            'identificacion'          => '0002',
+            'email'                   => 'camilo@gmail.com',
+            'password'                => Hash::make('camilo123'),
+            'rol'                     => 'admin',
+            'programa_academico'      => null,
+            'departamento_academico'  => null,
+        ]);
 
         // Usuario docente
         User::create([
             'nombre_completo'         => 'Docente de Prueba',
-            'identificacion'          => '0002',
+            'identificacion'          => '0003',
             'email'                   => 'docente@example.com',
             'password'                => Hash::make('password'),
             'rol'                     => 'docente',
@@ -38,7 +48,7 @@ class UserSeeder extends Seeder
         // Usuario estudiante
         User::create([
             'nombre_completo'         => 'Estudiante de Prueba',
-            'identificacion'          => '0003',
+            'identificacion'          => '0004',
             'email'                   => 'estudiante@example.com',
             'password'                => Hash::make('password'),
             'rol'                     => 'estudiante',

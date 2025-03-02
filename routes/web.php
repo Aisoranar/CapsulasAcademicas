@@ -5,9 +5,8 @@ use App\Http\Controllers\AsesoriaController;
 use App\Http\Controllers\CapsulaController;
 use App\Http\Controllers\DocumentoController;
 use App\Http\Controllers\UserController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ComentarioController;
-
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
@@ -29,10 +28,10 @@ Route::middleware('auth')->group(function () {
     // Ruta para descargar el documento con su nombre y formato original
     Route::get('/documentos/{id}/download', [DocumentoController::class, 'download'])->name('documentos.download');
     
-    // Rutas de administración de usuarios (solo para administradores, se puede proteger con middleware adicional)
+    // Rutas de administración de usuarios
     Route::resource('users', UserController::class);
     
-   // Rutas para comentarios
-   Route::post('comentarios', [ComentarioController::class, 'store'])->name('comentarios.store');
-   Route::post('comentarios/{comentario}/reaccion', [ComentarioController::class, 'reaccion'])->name('comentarios.reaccion');
+    // Rutas para comentarios (polimórficos)
+    Route::post('comentarios', [ComentarioController::class, 'store'])->name('comentarios.store');
+    Route::post('comentarios/{comentario}/reaccion', [ComentarioController::class, 'reaccion'])->name('comentarios.reaccion');
 });

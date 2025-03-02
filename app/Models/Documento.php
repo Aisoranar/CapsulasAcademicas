@@ -22,4 +22,10 @@ class Documento extends Model
     {
         return $this->belongsTo(User::class, 'docente_id');
     }
+
+    // Relación polimórfica para comentarios
+    public function comentarios()
+    {
+        return $this->morphMany(Comentario::class, 'commentable');
+    }
 }

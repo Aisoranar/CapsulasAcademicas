@@ -11,15 +11,18 @@
                     <h5 class="card-title">{{ $documento->titulo }}</h5>
                     <p class="card-text">{{ Str::limit($documento->descripcion, 100) }}</p>
                     <a href="{{ route('documentos.download', $documento->id) }}" class="btn btn-sm btn-success">Descargar</a>
+                    <!-- Botón para abrir el modal de previsualización del PDF -->
                     <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#verDocumentoModal{{ $documento->id }}">
-                        Ver
+                        Ver PDF
                     </button>
+                    <!-- Botón para ver los detalles (show) del documento -->
+                    <a href="{{ route('documentos.show', $documento->id) }}" class="btn btn-sm btn-secondary">Ver Detalles</a>
                     <a href="{{ route('documentos.edit', $documento->id) }}" class="btn btn-sm btn-warning">Editar</a>
                 </div>
             </div>
         </div>
 
-        <!-- Modal para ver el documento -->
+        <!-- Modal para previsualizar el documento PDF -->
         <div class="modal fade" id="verDocumentoModal{{ $documento->id }}" tabindex="-1" aria-labelledby="verDocumentoModalLabel{{ $documento->id }}" aria-hidden="true">
             <div class="modal-dialog modal-xl modal-dialog-centered">
                 <div class="modal-content">

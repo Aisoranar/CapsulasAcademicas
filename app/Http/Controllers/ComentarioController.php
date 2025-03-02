@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Comentario;
+use App\Models\Capsula;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,13 +14,27 @@ class ComentarioController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'capsula_id' => 'required|exists:capsulas,id',
-            'contenido'  => 'required|string',
-            'parent_id'  => 'nullable|exists:comentarios,id'
-        ]);
+        // Si se envía el campo "capsula_id", se asume que es un comentario sobre una cápsula.
+        if ($request->has('capsula_id')) {
+            $data = $request->validate([
+                'capsula_id' => 'required',
+                'contenido'  => 'required|string',
+                'parent_id'  => 'nullable|exists:comentarios,id'
+            ]);
+            // Se asignan los campos para la relación polimórfica
+            $data['commentable_id'] = $data['capsula_id'];
+            $data['commentable_type'] = Capsula::class;
+        } else {
+            // Validación original para otros tipos (ej. documento)
+            $data = $request->validate([
+                'commentable_id' => 'required',
+                'commentable_type' => 'required|string',
+                'contenido'  => 'required|string',
+                'parent_id'  => 'nullable|exists:comentarios,id'
+            ]);
+        }
 
-        // Validar palabras prohibidas (puedes ampliar la lista)
+        // Validar palabras prohibidas (lista ampliable)
         $palabrasProhibidas = ['palabra1', 'palabra2'];
         foreach ($palabrasProhibidas as $palabra) {
             if (stripos($data['contenido'], $palabra) !== false) {
@@ -42,15 +57,12 @@ class ComentarioController extends Controller
             'tipo' => 'required|in:like,dislike'
         ]);
 
-        // Verificar si el usuario ya reaccionó al comentario
         $existing = $comentario->reacciones()->where('user_id', Auth::id())->first();
 
         if ($existing) {
             if ($existing->tipo === $data['tipo']) {
-                // Si la reacción es la misma, se elimina (toggle off)
                 $existing->delete();
             } else {
-                // Si es distinta, se actualiza
                 $existing->update(['tipo' => $data['tipo']]);
             }
         } else {

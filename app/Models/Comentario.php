@@ -10,15 +10,17 @@ class Comentario extends Model
     use HasFactory;
 
     protected $fillable = [
-        'capsula_id',
+        'commentable_id',
+        'commentable_type',
         'user_id',
         'contenido',
-        'parent_id',
+        'parent_id'
     ];
 
-    public function capsula()
+    // Relación polimórfica: el elemento al que se comenta (Documento, Cápsula, etc.)
+    public function commentable()
     {
-        return $this->belongsTo(Capsula::class);
+        return $this->morphTo();
     }
 
     public function user()
@@ -26,13 +28,13 @@ class Comentario extends Model
         return $this->belongsTo(User::class);
     }
 
-    // Comentario padre (si es respuesta a otro comentario)
+    // Comentario padre (en caso de respuesta)
     public function parent()
     {
         return $this->belongsTo(Comentario::class, 'parent_id');
     }
 
-    // Respuestas al comentario (comentarios hijos)
+    // Respuestas (comentarios hijos)
     public function replies()
     {
         return $this->hasMany(Comentario::class, 'parent_id');
