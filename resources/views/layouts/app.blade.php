@@ -115,11 +115,7 @@
                               <i class="fa-solid fa-right-to-bracket nav-icon"></i>Iniciar sesión
                           </a>
                       </li>
-                      <li class="nav-item">
-                          <a class="nav-link" href="{{ route('register') }}">
-                              <i class="fa-solid fa-user-plus nav-icon"></i>Registrarse
-                          </a>
-                      </li>
+
                   @else
                       <li class="nav-item">
                           <a class="nav-link" href="{{ route('asesorias.index') }}">

@@ -2,7 +2,7 @@
 
 @section('content')
 <h2>Editar Cápsula de Aprendizaje</h2>
-<form action="{{ route('capsulas.update', $capsula->id) }}" method="POST">
+<form action="{{ route('capsulas.update', $capsula->id) }}" method="POST" enctype="multipart/form-data">
     @csrf
     @method('PUT')
     <div class="mb-3">
@@ -14,8 +14,12 @@
         <textarea name="descripcion" id="descripcion" class="form-control" rows="4" required>{{ $capsula->descripcion }}</textarea>
     </div>
     <div class="mb-3">
-        <label for="video_url" class="form-label">URL del Video</label>
-        <input type="url" name="video_url" id="video_url" class="form-control" value="{{ $capsula->video_url }}" required>
+        <label for="video_url" class="form-label">URL del Video (opcional)</label>
+        <input type="url" name="video_url" id="video_url" class="form-control" value="{{ $capsula->video_url }}">
+    </div>
+    <div class="mb-3">
+        <label for="video_file" class="form-label">Subir Nuevo Video (opcional)</label>
+        <input type="file" name="video_file" id="video_file" class="form-control">
     </div>
     <div class="mb-3">
         <label for="categoria" class="form-label">Categoría (opcional)</label>
