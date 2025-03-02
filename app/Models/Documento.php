@@ -14,6 +14,7 @@ class Documento extends Model
         'descripcion',
         'categoria',
         'archivo_path',
+        'nombre_original',
         'docente_id',
     ];
 

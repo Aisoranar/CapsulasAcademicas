@@ -118,13 +118,18 @@ class DocumentoController extends Controller
     public function download($id)
     {
         $documento = Documento::findOrFail($id);
-        // Se obtiene la ruta del archivo almacenado
+        // Ruta almacenada en el disco "public"
         $path = $documento->archivo_path;
-        // Se obtiene el nombre original almacenado; si no existe, se usa el nombre del archivo almacenado
-        $filename = $documento->nombre_original ?? basename($path);
-        // Se obtiene la ruta completa del archivo en el disco "public"
+        // Usa el nombre original, o si no existe, el basename del path
+        $filename = $documento->nombre_original ? $documento->nombre_original : basename($path);
+        // Ruta completa del archivo
         $fullPath = Storage::disk('public')->path($path);
-
-        return response()->download($fullPath, $filename);
+        // Determinar el MIME type
+        $mimeType = Storage::disk('public')->mimeType($path);
+    
+        return response()->download($fullPath, $filename, [
+            'Content-Type' => $mimeType,
+            'Content-Disposition' => 'attachment; filename="'.$filename.'"'
+        ]);
     }
 }
