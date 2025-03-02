@@ -6,10 +6,8 @@
     <title>Cápsulas Académicas</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome para iconos -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
-          integrity="sha512-pap6dRmOb6OfgYZVp8IMFT+7Y0iXv6QnNFOdxd6fdTBunqQy+Fz6zG+eP3prO1zKxXgI4XGxqaL6v9/9FS6+1w==" 
-          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
         /* Estilos globales */
         body {
@@ -58,6 +56,10 @@
         }
         .nav-icon {
             margin-right: 0.5rem;
+            transition: transform 0.2s ease;
+        }
+        .nav-icon:hover {
+            transform: scale(1.2);
         }
         /* Botón primario (verde institucional) */
         .btn-primary {
@@ -69,7 +71,7 @@
             background-color: #006600;
             border-color: #006600;
         }
-        /* Pie de página */
+        /* Pie de página (no fixed, se posiciona al final del contenido) */
         footer {
             background-color: #004d80;
             color: #fff;
@@ -101,7 +103,7 @@
     <nav class="navbar navbar-expand-lg">
       <div class="container">
           <a class="navbar-brand" href="{{ url('/') }}">
-              <i class="fa-solid fa-graduation-cap nav-icon"></i>
+              <i class="bi bi-graduation-cap nav-icon"></i>
               Cápsulas Académicas
           </a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
@@ -110,44 +112,49 @@
           <div class="collapse navbar-collapse" id="navMenu">
               <ul class="navbar-nav ms-auto">
                   @guest
-                      <li class="nav-item">
+                      <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Iniciar sesión">
                           <a class="nav-link" href="{{ route('login') }}">
-                              <i class="fa-solid fa-right-to-bracket nav-icon"></i>Iniciar sesión
+                              <i class="bi bi-box-arrow-in-right nav-icon"></i>
+                              Iniciar sesión
                           </a>
                       </li>
-
                   @else
-                      <li class="nav-item">
+                      <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Asesorías">
                           <a class="nav-link" href="{{ route('asesorias.index') }}">
-                              <i class="fa-solid fa-chalkboard-teacher nav-icon"></i>Asesorías
+                              <i class="bi bi-easel nav-icon"></i>
+                              Asesorías
                           </a>
                       </li>
-                      <li class="nav-item">
+                      <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Cápsulas">
                           <a class="nav-link" href="{{ route('capsulas.index') }}">
-                              <i class="fa-solid fa-video nav-icon"></i>Cápsulas
+                              <i class="bi bi-camera-video nav-icon"></i>
+                              Cápsulas
                           </a>
                       </li>
-                      <li class="nav-item">
+                      <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Documentos">
                           <a class="nav-link" href="{{ route('documentos.index') }}">
-                              <i class="fa-solid fa-file-pdf nav-icon"></i>Documentos
+                              <i class="bi bi-file-earmark-pdf nav-icon"></i>
+                              Documentos
                           </a>
                       </li>
-                      <!-- Perfil: muestra el detalle del usuario autenticado -->
-                      <li class="nav-item">
+                      <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Perfil">
                           <a class="nav-link" href="{{ route('users.show', auth()->user()->id) }}">
-                              <i class="fa-solid fa-user nav-icon"></i>Perfil
+                              <i class="bi bi-person nav-icon"></i>
+                              Perfil
                           </a>
                       </li>
-                      <!-- Usuarios: listado de usuarios para crear o administrar -->
-                      <li class="nav-item">
+                      @if(auth()->user()->rol === 'admin')
+                      <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Usuarios">
                           <a class="nav-link" href="{{ route('users.index') }}">
-                              <i class="fa-solid fa-users nav-icon"></i>Usuarios
+                              <i class="bi bi-people nav-icon"></i>
+                              Usuarios
                           </a>
                       </li>
-                      <!-- Enlace para cerrar sesión con modal de confirmación -->
-                      <li class="nav-item">
+                      @endif
+                      <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Cerrar sesión">
                           <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
-                              <i class="fa-solid fa-right-from-bracket nav-icon"></i>Cerrar sesión
+                              <i class="bi bi-box-arrow-right nav-icon"></i>
+                              Cerrar sesión
                           </a>
                       </li>
                   @endguest
@@ -172,7 +179,7 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="logoutModalLabel"><i class="fa-solid fa-right-from-bracket"></i> Confirmar cierre de sesión</h5>
+            <h5 class="modal-title" id="logoutModalLabel"><i class="bi bi-box-arrow-right"></i> Confirmar cierre de sesión</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
           </div>
           <div class="modal-body">
@@ -183,7 +190,7 @@
             <form action="{{ route('logout') }}" method="POST" class="d-inline">
                 @csrf
                 <button type="submit" class="btn btn-primary">
-                    <i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión
+                    <i class="bi bi-box-arrow-right"></i> Cerrar sesión
                 </button>
             </form>
           </div>
@@ -191,7 +198,7 @@
       </div>
     </div>
 
-    <!-- Pie de página -->
+    <!-- Pie de página (no fixed) -->
     <footer>
         <div class="container">
             <p>&copy; {{ date('Y') }} Cápsulas Académicas. Todos los derechos reservados.</p>
@@ -200,5 +207,12 @@
 
     <!-- Bootstrap Bundle JS (incluye Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Activar tooltips
+      var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+          return new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+    </script>
 </body>
 </html>

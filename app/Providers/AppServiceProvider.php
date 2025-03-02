@@ -21,4 +21,14 @@ class AppServiceProvider extends ServiceProvider
     {
         //
     }
+
+    protected $policies = [
+        \App\Models\Asesoria::class => \App\Policies\AsesoriaPolicy::class,
+        \App\Models\Capsula::class => \App\Policies\CapsulaPolicy::class,
+        \App\Models\Documento::class => \App\Policies\DocumentoPolicy::class,
+
+
+        // Añade aquí las demás asociaciones (Capsula, Documento, etc.)
+    ];
+    
 }

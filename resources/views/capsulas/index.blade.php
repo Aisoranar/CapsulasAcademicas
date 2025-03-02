@@ -2,7 +2,9 @@
 
 @section('content')
 <h2>Listado de Cápsulas de Aprendizaje</h2>
-<a href="{{ route('capsulas.create') }}" class="btn btn-primary mb-3">Subir nueva cápsula</a>
+@if(auth()->user()->rol !== 'estudiante')
+    <a href="{{ route('capsulas.create') }}" class="btn btn-primary mb-3">Subir nueva cápsula</a>
+@endif
 
 @php
     if (! function_exists('extractVideoID')) {
@@ -28,12 +30,14 @@
                     <h5 class="card-title">{{ $capsula->titulo }}</h5>
                     <p class="card-text">{{ Str::limit($capsula->descripcion, 100) }}</p>
                     <a href="{{ route('capsulas.show', $capsula->id) }}" class="btn btn-sm btn-info">Ver cápsula</a>
-                    <a href="{{ route('capsulas.edit', $capsula->id) }}" class="btn btn-sm btn-warning">Editar</a>
-                    <form action="{{ route('capsulas.destroy', $capsula->id) }}" method="POST" style="display: inline-block;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Está seguro de eliminar esta cápsula?')">Eliminar</button>
-                    </form>
+                    @if(auth()->user()->rol !== 'estudiante')
+                        <a href="{{ route('capsulas.edit', $capsula->id) }}" class="btn btn-sm btn-warning">Editar</a>
+                        <form action="{{ route('capsulas.destroy', $capsula->id) }}" method="POST" style="display: inline-block;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Está seguro de eliminar esta cápsula?')">Eliminar</button>
+                        </form>
+                    @endif
                 </div>
             </div>
         </div>

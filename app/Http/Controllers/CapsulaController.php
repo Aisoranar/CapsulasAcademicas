@@ -23,6 +23,8 @@ class CapsulaController extends Controller
      */
     public function create()
     {
+        // Solo admin y docentes pueden crear cápsulas.
+        $this->authorize('create', Capsula::class);
         return view('capsulas.create');
     }
 
@@ -31,7 +33,8 @@ class CapsulaController extends Controller
      */
     public function store(Request $request)
     {
-        // Validación básica
+        $this->authorize('create', Capsula::class);
+
         $validated = $request->validate([
             'titulo'      => 'required|string|max:255',
             'descripcion' => 'required|string',
@@ -49,12 +52,16 @@ class CapsulaController extends Controller
         if ($request->hasFile('video_file')) {
             $file = $request->file('video_file');
             $path = $file->store('videos', 'public');
-            // Se guarda la URL pública del archivo
             $validated['video_url'] = asset('storage/' . $path);
         }
 
-        // Se asigna el docente autenticado
-        $validated['docente_id'] = Auth::id();
+        // Se asigna el docente autenticado; si el usuario es docente, forzamos que la cápsula le pertenezca.
+        if (auth()->user()->rol === 'docente') {
+            $validated['docente_id'] = auth()->id();
+        } else {
+            // En el caso de admin, se puede enviar el docente_id desde el formulario o asignar un valor por defecto.
+            $validated['docente_id'] = $request->input('docente_id') ?? auth()->id();
+        }
 
         // Valor por defecto para 'duracion'
         $validated['duracion'] = 0;
@@ -79,6 +86,8 @@ class CapsulaController extends Controller
     public function edit($id)
     {
         $capsula = Capsula::findOrFail($id);
+        // Solo admin o el docente dueño de la cápsula pueden editarla.
+        $this->authorize('update', $capsula);
         return view('capsulas.edit', compact('capsula'));
     }
 
@@ -88,6 +97,8 @@ class CapsulaController extends Controller
     public function update(Request $request, $id)
     {
         $capsula = Capsula::findOrFail($id);
+        $this->authorize('update', $capsula);
+
         $validated = $request->validate([
             'titulo'      => 'required|string|max:255',
             'descripcion' => 'required|string',
@@ -107,12 +118,15 @@ class CapsulaController extends Controller
             $path = $file->store('videos', 'public');
             $validated['video_url'] = asset('storage/' . $path);
         } else {
-            // Si no se sube archivo, se conserva la URL actual o se actualiza la proporcionada
             $validated['video_url'] = $validated['video_url'] ?? $capsula->video_url;
         }
 
-        // Se mantiene la duración actual si no se actualiza
         $validated['duracion'] = $capsula->duracion ?? 0;
+
+        // Si el usuario es docente, forzamos que la cápsula pertenezca a él.
+        if (auth()->user()->rol === 'docente') {
+            $validated['docente_id'] = auth()->id();
+        }
 
         $capsula->update($validated);
 
@@ -125,6 +139,7 @@ class CapsulaController extends Controller
     public function destroy($id)
     {
         $capsula = Capsula::findOrFail($id);
+        $this->authorize('delete', $capsula);
         $capsula->delete();
 
         return redirect()->route('capsulas.index')->with('success', 'Cápsula eliminada exitosamente.');

@@ -23,7 +23,10 @@ class AsesoriaController extends Controller
      */
     public function create()
     {
-        // Se obtiene la lista de docentes para que el usuario elija
+        // Autorizar la creación (la policy debe permitir solo a admin y docentes)
+        $this->authorize('create', Asesoria::class);
+
+        // Se obtiene la lista de docentes para que el usuario elija (o para mostrar, según convenga)
         $docentes = User::where('rol', 'docente')->get();
         return view('asesorias.create', compact('docentes'));
     }
@@ -33,6 +36,8 @@ class AsesoriaController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Asesoria::class);
+
         $validated = $request->validate([
             'docente_id'  => 'required|exists:users,id',
             'materia'     => 'required|string|max:255',
@@ -43,6 +48,11 @@ class AsesoriaController extends Controller
             'enlace_sala' => 'required|url',
         ]);
 
+        // Si el usuario autenticado es docente, forzamos que la asesoría pertenezca a él
+        if (auth()->user()->rol === 'docente') {
+            $validated['docente_id'] = auth()->id();
+        }
+
         Asesoria::create($validated);
 
         return redirect()->route('asesorias.index')->with('success', 'Asesoría creada exitosamente.');
@@ -50,6 +60,7 @@ class AsesoriaController extends Controller
 
     /**
      * Muestra los detalles de una asesoría en particular.
+     * Esta acción es accesible para cualquier usuario autenticado.
      */
     public function show($id)
     {
@@ -63,6 +74,9 @@ class AsesoriaController extends Controller
     public function edit($id)
     {
         $asesoria = Asesoria::findOrFail($id);
+        // Solo admin o el docente dueño de la asesoría pueden editarla.
+        $this->authorize('update', $asesoria);
+
         $docentes = User::where('rol', 'docente')->get();
         return view('asesorias.edit', compact('asesoria', 'docentes'));
     }
@@ -73,6 +87,9 @@ class AsesoriaController extends Controller
     public function update(Request $request, $id)
     {
         $asesoria = Asesoria::findOrFail($id);
+        // Autoriza que el usuario pueda actualizar esta asesoría
+        $this->authorize('update', $asesoria);
+
         $validated = $request->validate([
             'docente_id'  => 'required|exists:users,id',
             'materia'     => 'required|string|max:255',
@@ -82,6 +99,11 @@ class AsesoriaController extends Controller
             'hora_fin'    => 'required',
             'enlace_sala' => 'required|url',
         ]);
+
+        // Si el usuario autenticado es docente, forzamos que la asesoría pertenezca a él
+        if (auth()->user()->rol === 'docente') {
+            $validated['docente_id'] = auth()->id();
+        }
 
         $asesoria->update($validated);
 
@@ -94,6 +116,9 @@ class AsesoriaController extends Controller
     public function destroy($id)
     {
         $asesoria = Asesoria::findOrFail($id);
+        // Solo admin o el docente dueño de la asesoría pueden eliminarla.
+        $this->authorize('delete', $asesoria);
+
         $asesoria->delete();
 
         return redirect()->route('asesorias.index')->with('success', 'Asesoría eliminada exitosamente.');

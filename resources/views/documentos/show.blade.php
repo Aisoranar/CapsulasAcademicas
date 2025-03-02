@@ -7,7 +7,7 @@
 <p><strong>Subido por:</strong> {{ $documento->docente->nombre_completo }}</p>
 <div class="mb-3">
     @if(pathinfo($documento->archivo_path, PATHINFO_EXTENSION) === 'pdf')
-        <iframe src="{{ asset('storage/' . $documento->archivo_path) }}#toolbar=0" frameborder="0" width="100%" height="600px"></iframe>
+        <iframe src="{{ asset('storage/' . $documento->archivo_path) }}#toolbar=0" frameborder="0" width="100%" style="height:80vh;"></iframe>
     @else
         <p>El documento no es un PDF y no se puede previsualizar.</p>
     @endif

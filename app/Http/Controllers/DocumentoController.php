@@ -23,6 +23,8 @@ class DocumentoController extends Controller
      */
     public function create()
     {
+        // Solo admin y docentes pueden crear documentos
+        $this->authorize('create', Documento::class);
         return view('documentos.create');
     }
 
@@ -31,6 +33,8 @@ class DocumentoController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Documento::class);
+
         $validated = $request->validate([
             'titulo'      => 'required|string|max:255',
             'descripcion' => 'nullable|string',
@@ -43,8 +47,14 @@ class DocumentoController extends Controller
         $validated['archivo_path'] = $path;
         // Se guarda el nombre original del archivo para usarlo en la descarga
         $validated['nombre_original'] = $request->file('archivo')->getClientOriginalName();
-        // Se asigna el docente autenticado
-        $validated['docente_id'] = Auth::id();
+        
+        // Si el usuario es docente, forzamos que el documento le pertenezca.
+        if (auth()->user()->rol === 'docente') {
+            $validated['docente_id'] = auth()->id();
+        } else {
+            // Para admin se permite enviar docente_id desde el formulario o se asigna por defecto.
+            $validated['docente_id'] = $request->input('docente_id') ?? auth()->id();
+        }
 
         Documento::create($validated);
 
@@ -53,6 +63,7 @@ class DocumentoController extends Controller
 
     /**
      * Muestra los detalles de un documento.
+     * Esta acción es accesible para cualquier usuario autenticado.
      */
     public function show($id)
     {
@@ -66,6 +77,8 @@ class DocumentoController extends Controller
     public function edit($id)
     {
         $documento = Documento::findOrFail($id);
+        // Solo admin o el docente dueño del documento pueden editarlo.
+        $this->authorize('update', $documento);
         return view('documentos.edit', compact('documento'));
     }
 
@@ -75,6 +88,8 @@ class DocumentoController extends Controller
     public function update(Request $request, $id)
     {
         $documento = Documento::findOrFail($id);
+        $this->authorize('update', $documento);
+
         $validated = $request->validate([
             'titulo'      => 'required|string|max:255',
             'descripcion' => 'nullable|string',
@@ -104,6 +119,7 @@ class DocumentoController extends Controller
     public function destroy($id)
     {
         $documento = Documento::findOrFail($id);
+        $this->authorize('delete', $documento);
         if ($documento->archivo_path) {
             Storage::disk('public')->delete($documento->archivo_path);
         }

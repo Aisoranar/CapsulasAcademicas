@@ -2,7 +2,9 @@
 
 @section('content')
 <h2>Documentos y Guías</h2>
-<a href="{{ route('documentos.create') }}" class="btn btn-primary mb-3">Subir Nuevo Documento</a>
+@if(auth()->user()->rol !== 'estudiante')
+    <a href="{{ route('documentos.create') }}" class="btn btn-primary mb-3">Subir Nuevo Documento</a>
+@endif
 <div class="row">
     @foreach($documentos as $documento)
         <div class="col-md-4 mb-3">
@@ -17,14 +19,25 @@
                     </button>
                     <!-- Botón para ver los detalles (show) del documento -->
                     <a href="{{ route('documentos.show', $documento->id) }}" class="btn btn-sm btn-secondary">Ver Detalles</a>
-                    <a href="{{ route('documentos.edit', $documento->id) }}" class="btn btn-sm btn-warning">Editar</a>
+                    @if(auth()->user()->rol !== 'estudiante')
+                        <a href="{{ route('documentos.edit', $documento->id) }}" class="btn btn-sm btn-warning">Editar</a>
+                        @can('delete', $documento)
+                            <form action="{{ route('documentos.destroy', $documento->id) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" onclick="return confirm('¿Estás seguro de eliminar este documento?')" class="btn btn-sm btn-danger">
+                                    Eliminar
+                                </button>
+                            </form>
+                        @endcan
+                    @endif
                 </div>
             </div>
         </div>
 
         <!-- Modal para previsualizar el documento PDF -->
         <div class="modal fade" id="verDocumentoModal{{ $documento->id }}" tabindex="-1" aria-labelledby="verDocumentoModalLabel{{ $documento->id }}" aria-hidden="true">
-            <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="verDocumentoModalLabel{{ $documento->id }}">{{ $documento->titulo }}</h5>
@@ -32,7 +45,7 @@
                     </div>
                     <div class="modal-body">
                         @if(pathinfo($documento->archivo_path, PATHINFO_EXTENSION) === 'pdf')
-                            <iframe src="{{ asset('storage/' . $documento->archivo_path) }}#toolbar=0" frameborder="0" width="100%" height="600px"></iframe>
+                            <iframe src="{{ asset('storage/' . $documento->archivo_path) }}#toolbar=0" frameborder="0" width="100%" style="height:80vh;"></iframe>
                         @else
                             <p>El documento no es un PDF y no se puede previsualizar.</p>
                         @endif
