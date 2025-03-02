@@ -26,7 +26,7 @@
 <div class="modal fade" id="accederSalaModal" tabindex="-1" aria-labelledby="accederSalaModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <form action="{{ route('asesorias.metricas.store') }}" method="POST">
+      <form action="{{ route('asesorias.metricas.store') }}" method="POST" target="_blank">
           @csrf
           <div class="modal-header">
             <h5 class="modal-title" id="accederSalaModalLabel">Confirmar Acceso a la Sala</h5>

@@ -144,12 +144,19 @@
                           </a>
                       </li>
                       @if(auth()->user()->rol === 'admin')
-                      <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Usuarios">
-                          <a class="nav-link" href="{{ route('users.index') }}">
-                              <i class="bi bi-people nav-icon"></i>
-                              Usuarios
-                          </a>
-                      </li>
+                          <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Usuarios">
+                              <a class="nav-link" href="{{ route('users.index') }}">
+                                  <i class="bi bi-people nav-icon"></i>
+                                  Usuarios
+                              </a>
+                          </li>
+                          <!-- Nuevo nav para Métricas -->
+                          <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Métricas">
+                              <a class="nav-link" href="{{ route('metricas.index') }}">
+                                  <i class="bi bi-bar-chart nav-icon"></i>
+                                  Métricas
+                              </a>
+                          </li>
                       @endif
                       <li class="nav-item" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Cerrar sesión">
                           <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
@@ -214,5 +221,8 @@
           return new bootstrap.Tooltip(tooltipTriggerEl);
       });
     </script>
+
+    <!-- Se incluye la sección de scripts para vistas que la necesiten -->
+    @yield('scripts')
 </body>
 </html>
