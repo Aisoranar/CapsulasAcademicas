@@ -18,8 +18,28 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->enum('rol', ['admin', 'docente', 'estudiante']);
-            $table->string('carrera')->nullable();
-            $table->string('departamento')->nullable();
+            $table->enum('programa_academico', [
+                'Administración de Negocios Internacionales',
+                'Ingeniería Informática',
+                'Licenciatura en Artes',
+                'Química',
+                'Comunicación Social',
+                'Trabajo Social',
+                'Derecho',
+                'Técnico en Extracción de Biomasa Enérgetica - Modalidad presencial',
+                'Tecnología en Procesamiento de Alimentos - Modalidad a distancia',
+                'Ingeniería Agroindustrial',
+                'Ingeniería Agronómica',
+                'Ingeniería Civil',
+                'Tecnología en Obras Civiles',
+                'Ingeniería Ambiental y de Saneamiento',
+                'Tecnología en Operación de Sistemas Electromecánicos',
+                'Tecnología en Seguridad y Salud en el Trabajo',
+                'Ingeniería de Producción',
+                'Ingeniería en Seguridad y Salud en el Trabajo',
+                'Medicina Veterinaria y Zootecnia',
+            ])->nullable();
+            $table->string('departamento_academico')->nullable();
             $table->timestamps();
         });
     }

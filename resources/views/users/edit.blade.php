@@ -26,13 +26,32 @@
         </select>
     </div>
     <div class="mb-3">
-        <label for="carrera" class="form-label">Carrera</label>
-        <input type="text" name="carrera" id="carrera" class="form-control" value="{{ $user->carrera }}">
+        <label for="programa_academico" class="form-label">Programa Académico</label>
+        <select name="programa_academico" id="programa_academico" class="form-control">
+            <option value="">Seleccione un programa</option>
+            @foreach($programas as $programa)
+                <option value="{{ $programa }}" {{ $user->programa_academico == $programa ? 'selected' : '' }}>{{ $programa }}</option>
+            @endforeach
+        </select>
     </div>
     <div class="mb-3">
-        <label for="departamento" class="form-label">Departamento</label>
-        <input type="text" name="departamento" id="departamento" class="form-control" value="{{ $user->departamento }}">
+        <label for="departamento_academico" class="form-label">Departamento</label>
+        <input type="text" name="departamento_academico" id="departamento_academico" class="form-control" value="{{ $user->departamento_academico }}">
     </div>
     <button type="submit" class="btn btn-primary">Actualizar Usuario</button>
 </form>
+@endsection
+
+@section('scripts')
+<!-- Incluye jQuery y Select2 -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#programa_academico').select2({
+            placeholder: 'Seleccione un programa',
+            allowClear: true
+        });
+    });
+</script>
 @endsection

@@ -22,7 +22,29 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('users.create');
+        $programas = [
+            'Administración de Negocios Internacionales',
+            'Ingeniería Informática',
+            'Licenciatura en Artes',
+            'Química',
+            'Comunicación Social',
+            'Trabajo Social',
+            'Derecho',
+            'Técnico en Extracción de Biomasa Enérgetica - Modalidad presencial',
+            'Tecnología en Procesamiento de Alimentos - Modalidad a distancia',
+            'Ingeniería Agroindustrial',
+            'Ingeniería Agronómica',
+            'Ingeniería Civil',
+            'Tecnología en Obras Civiles',
+            'Ingeniería Ambiental y de Saneamiento',
+            'Tecnología en Operación de Sistemas Electromecánicos',
+            'Tecnología en Seguridad y Salud en el Trabajo',
+            'Ingeniería de Producción',
+            'Ingeniería en Seguridad y Salud en el Trabajo',
+            'Medicina Veterinaria y Zootecnia',
+        ];
+
+        return view('users.create', compact('programas'));
     }
 
     /**
@@ -30,14 +52,37 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        // Definición de programas válidos
+        $programasValidos = implode(',', [
+            'Administración de Negocios Internacionales',
+            'Ingeniería Informática',
+            'Licenciatura en Artes',
+            'Química',
+            'Comunicación Social',
+            'Trabajo Social',
+            'Derecho',
+            'Técnico en Extracción de Biomasa Enérgetica - Modalidad presencial',
+            'Tecnología en Procesamiento de Alimentos - Modalidad a distancia',
+            'Ingeniería Agroindustrial',
+            'Ingeniería Agronómica',
+            'Ingeniería Civil',
+            'Tecnología en Obras Civiles',
+            'Ingeniería Ambiental y de Saneamiento',
+            'Tecnología en Operación de Sistemas Electromecánicos',
+            'Tecnología en Seguridad y Salud en el Trabajo',
+            'Ingeniería de Producción',
+            'Ingeniería en Seguridad y Salud en el Trabajo',
+            'Medicina Veterinaria y Zootecnia',
+        ]);
+
         $validated = $request->validate([
-            'nombre_completo' => 'required|string|max:255',
-            'identificacion'  => 'required|string|max:255|unique:users,identificacion',
-            'email'           => 'required|email|max:255|unique:users,email',
-            'password'        => 'required|string|min:6|confirmed',
-            'rol'             => 'required|in:admin,docente,estudiante',
-            'carrera'         => 'nullable|string|max:255',
-            'departamento'    => 'nullable|string|max:255',
+            'nombre_completo'         => 'required|string|max:255',
+            'identificacion'          => 'required|string|max:255|unique:users,identificacion',
+            'email'                   => 'required|email|max:255|unique:users,email',
+            'password'                => 'required|string|min:6|confirmed',
+            'rol'                     => 'required|in:admin,docente,estudiante',
+            'programa_academico'      => 'nullable|in:' . $programasValidos,
+            'departamento_academico'  => 'nullable|string|max:255',
         ]);
 
         // Encriptar la contraseña antes de guardar
@@ -63,7 +108,29 @@ class UserController extends Controller
     public function edit($id)
     {
         $user = User::findOrFail($id);
-        return view('users.edit', compact('user'));
+        $programas = [
+            'Administración de Negocios Internacionales',
+            'Ingeniería Informática',
+            'Licenciatura en Artes',
+            'Química',
+            'Comunicación Social',
+            'Trabajo Social',
+            'Derecho',
+            'Técnico en Extracción de Biomasa Enérgetica - Modalidad presencial',
+            'Tecnología en Procesamiento de Alimentos - Modalidad a distancia',
+            'Ingeniería Agroindustrial',
+            'Ingeniería Agronómica',
+            'Ingeniería Civil',
+            'Tecnología en Obras Civiles',
+            'Ingeniería Ambiental y de Saneamiento',
+            'Tecnología en Operación de Sistemas Electromecánicos',
+            'Tecnología en Seguridad y Salud en el Trabajo',
+            'Ingeniería de Producción',
+            'Ingeniería en Seguridad y Salud en el Trabajo',
+            'Medicina Veterinaria y Zootecnia',
+        ];
+
+        return view('users.edit', compact('user', 'programas'));
     }
 
     /**
@@ -72,13 +139,36 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
+
+        $programasValidos = implode(',', [
+            'Administración de Negocios Internacionales',
+            'Ingeniería Informática',
+            'Licenciatura en Artes',
+            'Química',
+            'Comunicación Social',
+            'Trabajo Social',
+            'Derecho',
+            'Técnico en Extracción de Biomasa Enérgetica - Modalidad presencial',
+            'Tecnología en Procesamiento de Alimentos - Modalidad a distancia',
+            'Ingeniería Agroindustrial',
+            'Ingeniería Agronómica',
+            'Ingeniería Civil',
+            'Tecnología en Obras Civiles',
+            'Ingeniería Ambiental y de Saneamiento',
+            'Tecnología en Operación de Sistemas Electromecánicos',
+            'Tecnología en Seguridad y Salud en el Trabajo',
+            'Ingeniería de Producción',
+            'Ingeniería en Seguridad y Salud en el Trabajo',
+            'Medicina Veterinaria y Zootecnia',
+        ]);
+
         $validated = $request->validate([
-            'nombre_completo' => 'required|string|max:255',
-            'email'           => 'required|email|max:255|unique:users,email,'.$user->id,
-            'identificacion'  => 'required|string|max:255|unique:users,identificacion,'.$user->id,
-            'rol'             => 'required|in:admin,docente,estudiante',
-            'carrera'         => 'nullable|string|max:255',
-            'departamento'    => 'nullable|string|max:255',
+            'nombre_completo'         => 'required|string|max:255',
+            'email'                   => 'required|email|max:255|unique:users,email,'.$user->id,
+            'identificacion'          => 'required|string|max:255|unique:users,identificacion,'.$user->id,
+            'rol'                     => 'required|in:admin,docente,estudiante',
+            'programa_academico'      => 'nullable|in:' . $programasValidos,
+            'departamento_academico'  => 'nullable|string|max:255',
         ]);
 
         $user->update($validated);
