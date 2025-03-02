@@ -9,34 +9,35 @@ use Illuminate\Auth\Access\Response;
 class AsesoriaPolicy
 {
     /**
+     * Permite crear una asesoría.
+     * Admin y docentes pueden crear.
+     */
+    public function create(User $user)
+    {
+        return in_array($user->rol, ['admin', 'docente'])
+            ? Response::allow()
+            : Response::deny('No tienes permiso para crear asesorías.');
+    }
+
+    /**
      * Permite actualizar la asesoría.
-     * El admin puede actualizar cualquier asesoría,
-     * el docente puede actualizar solo la suya.
+     * Tanto admin como docentes pueden actualizar cualquier asesoría.
      */
     public function update(User $user, Asesoria $asesoria)
     {
-        if ($user->rol === 'admin') {
-            return Response::allow();
-        }
-        if ($user->rol === 'docente' && $asesoria->docente_id == $user->id) {
-            return Response::allow();
-        }
-        return Response::deny('No tienes permiso para actualizar esta asesoría.');
+        return in_array($user->rol, ['admin', 'docente'])
+            ? Response::allow()
+            : Response::deny('No tienes permiso para actualizar esta asesoría.');
     }
 
     /**
      * Permite eliminar la asesoría.
-     * El admin puede eliminar cualquier asesoría,
-     * el docente puede eliminar solo la suya.
+     * Tanto admin como docentes pueden eliminar cualquier asesoría.
      */
     public function delete(User $user, Asesoria $asesoria)
     {
-        if ($user->rol === 'admin') {
-            return Response::allow();
-        }
-        if ($user->rol === 'docente' && $asesoria->docente_id == $user->id) {
-            return Response::allow();
-        }
-        return Response::deny('No tienes permiso para eliminar esta asesoría.');
+        return in_array($user->rol, ['admin', 'docente'])
+            ? Response::allow()
+            : Response::deny('No tienes permiso para eliminar esta asesoría.');
     }
 }

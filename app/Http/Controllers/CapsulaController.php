@@ -55,11 +55,12 @@ class CapsulaController extends Controller
             $validated['video_url'] = asset('storage/' . $path);
         }
 
-        // Se asigna el docente autenticado; si el usuario es docente, forzamos que la cápsula le pertenezca.
+        // Se asigna el docente autenticado.
+        // Si el usuario es docente, se fuerza que la cápsula le pertenezca;
+        // Si es admin, se permite enviar el docente_id desde el formulario o asignar el id del admin por defecto.
         if (auth()->user()->rol === 'docente') {
             $validated['docente_id'] = auth()->id();
         } else {
-            // En el caso de admin, se puede enviar el docente_id desde el formulario o asignar un valor por defecto.
             $validated['docente_id'] = $request->input('docente_id') ?? auth()->id();
         }
 
@@ -86,7 +87,7 @@ class CapsulaController extends Controller
     public function edit($id)
     {
         $capsula = Capsula::findOrFail($id);
-        // Solo admin o el docente dueño de la cápsula pueden editarla.
+        // Solo admin y docentes pueden editar la cápsula.
         $this->authorize('update', $capsula);
         return view('capsulas.edit', compact('capsula'));
     }
@@ -123,10 +124,7 @@ class CapsulaController extends Controller
 
         $validated['duracion'] = $capsula->duracion ?? 0;
 
-        // Si el usuario es docente, forzamos que la cápsula pertenezca a él.
-        if (auth()->user()->rol === 'docente') {
-            $validated['docente_id'] = auth()->id();
-        }
+        // No se fuerza la reasignación de docente_id en update para no alterar el dueño original.
 
         $capsula->update($validated);
 

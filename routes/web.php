@@ -6,6 +6,7 @@ use App\Http\Controllers\CapsulaController;
 use App\Http\Controllers\DocumentoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ComentarioController;
+use App\Http\Controllers\AsesoriaMetricaController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -23,23 +24,28 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware('auth')->group(function () {
 
     // Asesorías:
-    // La acción "show" es accesible para todos los usuarios autenticados.
-    Route::get('asesorias/{asesoria}', [AsesoriaController::class, 'show'])->name('asesorias.show');
+    // Definimos la ruta "show" restringiendo el parámetro a números para evitar conflictos.
+    Route::get('asesorias/{asesoria}', [AsesoriaController::class, 'show'])
+        ->where('asesoria', '[0-9]+')
+        ->name('asesorias.show');
     // Las demás acciones del CRUD se definen en el resource (la autorización se maneja con policies en el controlador).
     Route::resource('asesorias', AsesoriaController::class)->except(['show']);
 
     // Cápsulas:
-    // La acción "show" es accesible para todos los usuarios autenticados.
-    Route::get('capsulas/{capsula}', [CapsulaController::class, 'show'])->name('capsulas.show');
-    // Las demás acciones del CRUD se definen en el resource (la autorización se maneja con policies en el controlador).
+    // Definimos primero el resource sin la acción "show".
     Route::resource('capsulas', CapsulaController::class)->except(['show']);
+    // Luego definimos la ruta "show" con restricción numérica para que "capsulas/create" no sea capturada.
+    Route::get('capsulas/{capsula}', [CapsulaController::class, 'show'])
+        ->where('capsula', '[0-9]+')
+        ->name('capsulas.show');
 
     // Documentos:
     // La acción "show" es accesible para todos los usuarios autenticados.
-    Route::get('documentos/{documento}', [DocumentoController::class, 'show'])->name('documentos.show');
-    // Las demás acciones del CRUD se definen en el resource (la autorización se maneja con policies en el controlador).
+    Route::get('documentos/{documento}', [DocumentoController::class, 'show'])
+        ->where('documento', '[0-9]+')
+        ->name('documentos.show');
+    // Las demás acciones del CRUD se definen en el resource.
     Route::resource('documentos', DocumentoController::class)->except(['show']);
-
     // Ruta para descargar el documento con su nombre y formato original.
     Route::get('/documentos/{id}/download', [DocumentoController::class, 'download'])->name('documentos.download');
 
@@ -52,4 +58,9 @@ Route::middleware('auth')->group(function () {
     // Rutas para comentarios (polimórficos)
     Route::post('comentarios', [ComentarioController::class, 'store'])->name('comentarios.store');
     Route::post('comentarios/{comentario}/reaccion', [ComentarioController::class, 'reaccion'])->name('comentarios.reaccion');
+
+    // Métricas de acceso a la sala:
+    Route::post('asesorias/metricas', [AsesoriaMetricaController::class, 'store'])->name('asesorias.metricas.store');
+    // Ruta para ver las métricas (por ejemplo, solo para admin).
+    Route::get('metricas', [AsesoriaMetricaController::class, 'index'])->name('metricas.index')->middleware('admin');
 });
